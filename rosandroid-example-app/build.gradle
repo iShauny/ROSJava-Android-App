@@ -28,4 +28,7 @@ android {
 
 dependencies {
     compile project(':libraries:rosandroid-core')
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+
 }

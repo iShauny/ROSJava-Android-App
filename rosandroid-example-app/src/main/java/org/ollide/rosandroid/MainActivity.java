@@ -16,13 +16,18 @@
 
 package org.ollide.rosandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
-
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+import android.widget.TextView;
 import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
+
+
 
 public class MainActivity extends RosActivity {
 
@@ -34,6 +39,27 @@ public class MainActivity extends RosActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //create the floating action button used to change the ROS master
+        FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
+        newMasterFAB.setAlpha(0.5f);
+        newMasterFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMasterChooser();
+            }
+        });
+        FloatingActionButton tempCameraFAB = findViewById(R.id.tempCameraFAB);
+        tempCameraFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CameraView.class));
+
+            }
+        });
+
+        //set text view to show current master
+        TextView currentMasterTextView = findViewById(R.id.currentMasterTextView);
     }
 
     @Override
