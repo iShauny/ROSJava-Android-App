@@ -27,6 +27,7 @@ import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
+import java.net.URI;
 
 
 public class MainActivity extends RosActivity {
