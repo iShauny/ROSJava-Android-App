@@ -18,38 +18,39 @@ package org.ollide.rosandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.TextView;
+
 import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
-import java.net.URI;
-
 
 public class MainActivity extends RosActivity {
 
     public MainActivity() {
-        super("RosAndroidExample", "RosAndroidExample");
+        super("Ros Android", "Ros Android");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void init(NodeMainExecutor nodeMainExecutor) {
+
 
         //create the floating action button used to change the ROS master
         FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
         newMasterFAB.setAlpha(0.5f);
-        newMasterFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startMasterChooser();
-            }
-        });
+
         FloatingActionButton tempCameraFAB = findViewById(R.id.tempCameraFAB);
         tempCameraFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,14 +61,38 @@ public class MainActivity extends RosActivity {
         });
 
         //set text view to show current master
-        TextView currentMasterTextView = findViewById(R.id.currentMasterTextView);
-    }
+        final TextView currentMasterTextView = findViewById(R.id.currentMasterTextView);
 
-    @Override
-    protected void init(NodeMainExecutor nodeMainExecutor) {
+        if (getMasterUri() != null) // if we are already connected to a master hide the button
+        {
+            newMasterFAB.hide();
+            //this java code allows this class to interact with the main thread when it returns
+            //from master chooser
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    currentMasterTextView.setText(String.format("%s%s",
+                            getString(R.string.getMasterUriConnected), getMasterUri()));
+                }
+            });
+        }
+        else
+        {
+            newMasterFAB.show();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    currentMasterTextView.setText(R.string.getMasterUriNotConnected);
+
+
+                }
+            });
+        }
+
         NodeMain node = new SimplePublisherNode();
 
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress());
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
+                InetAddressFactory.newNonLoopback().getHostAddress());
         nodeConfiguration.setMasterUri(getMasterUri());
 
         nodeMainExecutor.execute(node, nodeConfiguration);
