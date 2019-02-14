@@ -103,6 +103,8 @@ public class CameraView extends RosActivity {
                 public void onMove(int angle, int strength) {
                     // convert angle into wheel movements and strength as a multiplier between 0 and 1
 
+                    final double MAX_SPEED = 1.0;
+
                     // this creates a new twist message!
                     geometry_msgs.Twist CameraMovement = MovementPublisher.newMessage();
 
@@ -114,51 +116,73 @@ public class CameraView extends RosActivity {
 
                 /* To better understand the next algorithm, here is an explanation:
 
-                   Visualise a circle on an x and y axis with a max radius equal to when strength is
+                   Visualise a circle on an x and z axis with a max radius equal to when strength is
                    100%.
 
-                   between 0 and 90, the x and y co-ordinates, given the r as strength and angle,
+                   between 0 and 90, the x and z co-ordinates, given the r as strength and angle,
                    can be calculated using the fundamentals of SOH-CAH-TOA:
 
-                   x = (str)*Sin(angle) and y = (str) * cos(angle)
+                   x = (str) * sin(angle) * MAX_SPEED and z = (str) * cos(angle) * MAX_SPEED
 
                    We can use this fundamental law of trigonometry and apply it to all 4 regions of
                    our visualised axis. The trigonometry equations remain the same, but our angles
                    change as the angle is calculated between 0 and 360 from the far right
-                   counter-clockwise.
+                   counter-clockwise. Additionally, we use multipliers to apply negatives to the x
+                   and z values when they are in their respective negative axis. The MAX_SPEED
+                   variable represents a predefined limit for how fast the robot can go.
 
-                   Between 0 -> 90, angle = angle
-                   Between 90 -> 180, angle = 180 - angle
-                   Between 180 -> 270, angle = angle - 180
-                   Between 270 -> 360, angle = 360 - angle
+                   Between 0 -> 90, angle = angle, x positive, z negative
+                   Between 90 -> 180, angle = 180 - angle, x positive, z negative
+                   Between 180 -> 270, angle = angle - 180, x negative, z negative
+                   Between 270 -> 360, angle = 360 - angle, x negative, z positive
                 */
 
+                    // not strictly needed, but allows us to store our new angles separately
                     int theta = 0;
+                    // convert our strength into a multiplier from a percentage
+                    double str = (double) strength / 100.0;
+                    // used to publish our values
+                    double x;
+                    double z;
+
+                    // this multiplier will be used to determine which region of the four regions
+                    // of the axis we are currently in based on the angle
+                    double x_multiplier = 0.0;
+                    double z_multiplier = 0.0;
 
                     if ((angle >= 0) && (angle <= 90))
                     {
                         theta = angle;
+                        x_multiplier = 1.0;
+                        z_multiplier = -1.0;
                     }
                     else if ((angle >= 90) && (angle <= 180))
                     {
-                        theta = 180 - angle;
+                        theta = 180 - angle; // angle offset
+                        x_multiplier = 1.0;
+                        z_multiplier = 1.0;
                     }
                     else if ((angle >= 180) && (angle <= 270))
                     {
-                        theta = angle - 180;
+                        theta = angle - 180; // angle offset
+                        x_multiplier = -1.0;
+                        z_multiplier = -1.0;
                     }
                     else if ((angle >= 270) && (angle <= 360))
                     {
-                        theta = 360 - angle;
+                        theta = 360 - angle; // angle offset
+                        x_multiplier = -1.0;
+                        z_multiplier = 1.0;
                     }
 
-                    // Math.round() returns a long when rounding a double so need to force int
-                    int x = (int) Math.round((strength) * Math.sin(theta));
-                    int y = (int) Math.round((strength) * Math.cos(theta));
+                    x = ((str) * x_multiplier * Math.sin(Math.toRadians(theta)) * MAX_SPEED);
+                    z = ((str) * z_multiplier * Math.cos(Math.toRadians(theta)) * MAX_SPEED);
 
                     // publish our new x and y values
-                    CameraMovement.getAngular().setX(x);
-                    CameraMovement.getAngular().setY(y);
+                    CameraMovement.getLinear().setX(x);
+                    CameraMovement.getAngular().setZ(z);
+
+                    MovementPublisher.publish(CameraMovement);
                 }
             });
         }
