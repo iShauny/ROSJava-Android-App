@@ -23,11 +23,9 @@ import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
 
@@ -41,6 +39,20 @@ public class MainActivity extends RosActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //create the floating action button used to change the ROS master
+        final FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
+        newMasterFAB.setAlpha(0.5f);
+        newMasterFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    startMasterChooser();
+                }
+                catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Already connected to a master!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -102,14 +114,7 @@ public class MainActivity extends RosActivity {
                     // if we are not connected to a master let them choose one
                     newMasterFAB.show();
                 }
-            }
-        });
-        NodeMain node = new SimplePublisherNode();
-
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
-                InetAddressFactory.newNonLoopback().getHostAddress());
-        nodeConfiguration.setMasterUri(getMasterUri());
-
-        nodeMainExecutor.execute(node, nodeConfiguration);
+            });
+        }
     }
 }
