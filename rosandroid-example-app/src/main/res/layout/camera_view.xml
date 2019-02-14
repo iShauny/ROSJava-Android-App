@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <org.ros.android.view.RosImageView
+        android:id="@+id/CameraImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@mipmap/icon" />
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/CameraJoystick"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        custom:JV_backgroundColor="#d3d3d3"
+        custom:JV_borderColor="#c0c0c0"
+        custom:JV_borderWidth="0dp"
+        custom:JV_buttonColor="#1b1b1b"
+        custom:JV_buttonSizeRatio="20%"
+        custom:JV_fixedCenter="true" />
+
+    <TextView
+        android:id="@+id/JoystickParametersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Angle: Strength:" />
+
+</RelativeLayout>

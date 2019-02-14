@@ -46,49 +46,64 @@ public class MainActivity extends RosActivity {
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
 
-
-        //create the floating action button used to change the ROS master
-        FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
-        newMasterFAB.setAlpha(0.5f);
-
-        FloatingActionButton tempCameraFAB = findViewById(R.id.tempCameraFAB);
-        tempCameraFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CameraView.class));
-
-            }
-        });
-
-        //set text view to show current master
+        // set text view to show current master
         final TextView currentMasterTextView = findViewById(R.id.currentMasterTextView);
 
-        if (getMasterUri() != null) // if we are already connected to a master hide the button
-        {
-            newMasterFAB.hide();
-            //this java code allows this class to interact with the main thread when it returns
-            //from master chooser
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
+        // this java code allows this class to interact with the main thread when it returns
+        // from master chooser, otherwise it would not have permission as master chooser starts the
+        // ui thread
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+
+                //create the floating action button used to change the ROS master
+                final FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
+                newMasterFAB.setAlpha(0.5f);
+
+                newMasterFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        startMasterChooser();
+                    }
+                });
+
+                // start it as hidden because master chooser runs on startup
+                newMasterFAB.hide();
+
+                // create camera floating action button
+                final FloatingActionButton tempCameraFAB = findViewById(R.id.tempCameraFAB);
+
+                tempCameraFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        // start camera activity
+                        startActivity(new Intent(MainActivity.this, CameraView.class));
+
+                    }
+                });
+
+                //start camera button as hidden until they choose a master
+                tempCameraFAB.hide();
+
+                // if we are already connected to a master hide the button
+                if (getMasterUri() != null)
+                {
                     currentMasterTextView.setText(String.format("%s%s",
                             getString(R.string.getMasterUriConnected), getMasterUri()));
-                }
-            });
-        }
-        else
-        {
-            newMasterFAB.show();
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
+
+                    // let them have access to all modules
+                    tempCameraFAB.show();
+
+                } else {
                     currentMasterTextView.setText(R.string.getMasterUriNotConnected);
 
-
+                    // if we are not connected to a master let them choose one
+                    newMasterFAB.show();
                 }
-            });
-        }
-
+            }
+        });
         NodeMain node = new SimplePublisherNode();
 
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
