@@ -32,14 +32,14 @@ import org.ros.node.NodeMainExecutor;
 public class MainActivity extends RosActivity {
 
     public MainActivity() {
-        super("Ros Android", "Ros Android");
+        super("ROS Android", "ROS Android");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //create the floating action button used to change the ROS master
+        /* create the floating action button used to change the ROS master */
         final FloatingActionButton newMasterFAB = findViewById(R.id.newMasterFAB);
         newMasterFAB.setAlpha(0.5f);
         newMasterFAB.setOnClickListener(new View.OnClickListener() {
