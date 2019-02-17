@@ -4,8 +4,8 @@
     <string name="app_name">ROSJava Interface</string>
     <string name="getMasterUriConnected">Currently connected to a master on:\n</string>
     <string name="getMasterUriNotConnected">No master currently connected.</string>
-    <string name="degrees">"\u00B0"</string>
-    <string name="percent">"\u0025"</string>
+    <string name="CameraCompressedTopic">/usb_cam/image_raw/compressed</string>
+    <string name="CmdVelTopic">/turtle1/cmd_vel</string>
 
 
 </resources>

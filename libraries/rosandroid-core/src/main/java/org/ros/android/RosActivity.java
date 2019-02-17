@@ -92,7 +92,7 @@ public abstract class RosActivity extends Activity {
           }.execute();
         } else {
           // Without a master URI configured, we are in an unusable state.
-          nodeMainExecutorService.forceShutdown();
+          nodeMainExecutorService.shutdown();
         }
       }
     }

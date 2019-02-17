@@ -55,6 +55,7 @@
         android:clickable="true"
         android:src="@android:drawable/ic_menu_camera"
         android:visibility="invisible"
-        android:focusable="true" />
+        android:focusable="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
