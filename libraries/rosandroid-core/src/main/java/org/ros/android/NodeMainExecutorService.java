@@ -32,7 +32,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -204,8 +204,7 @@ public class NodeMainExecutorService extends Service implements NodeMainExecutor
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel("ros_java",
                         getString(R.string.NOTIFICATION_CHANNEL_NAME),
-                        NotificationManager.IMPORTANCE_LOW);
-
+                        NotificationManager.IMPORTANCE_MIN);
                 NotificationManager nManager = (NotificationManager) getSystemService(
                         Context.NOTIFICATION_SERVICE);
                 nManager.createNotificationChannel(channel);

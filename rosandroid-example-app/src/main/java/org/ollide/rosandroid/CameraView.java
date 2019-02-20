@@ -124,7 +124,7 @@ public class CameraView extends RosActivity {
 
             /* assign a MAX_SPEED for the robot here */
             /* TODO: Make this customizable in master chooser maybe? */
-            final double MAX_SPEED = 1.0;
+            final double MAX_SPEED = 0.6;
 
             Joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
                 @Override

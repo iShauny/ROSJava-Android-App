@@ -3,9 +3,11 @@
 
     <string name="app_name">ROSJava Interface</string>
     <string name="getMasterUriConnected">Currently connected to a master on:\n</string>
+
+    <!-- Edit the topics below this line for your robot -->
     <string name="getMasterUriNotConnected">No master currently connected.</string>
     <string name="CameraCompressedTopic">/usb_cam/image_raw/compressed</string>
-    <string name="CmdVelTopic">/turtle1/cmd_vel</string>
+    <string name="CmdVelTopic">/cmd_vel</string>
 
 
 </resources>
