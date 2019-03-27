@@ -225,7 +225,6 @@ public class NodeMainExecutorService extends Service implements NodeMainExecutor
                                 .setContentText(getString(R.string.NOTIFICATION_TEXT))
                                 .setOngoing(true)
                                 .build();
-                startForeground(ONGOING_NOTIFICATION, notification);
                 nManager.notify(1, notification);
             }
             else

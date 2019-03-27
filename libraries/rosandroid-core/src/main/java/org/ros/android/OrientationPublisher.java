@@ -20,12 +20,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import geometry_msgs.PoseStamped;
+
 import org.ros.message.Time;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+
+import geometry_msgs.PoseStamped;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
@@ -55,7 +57,6 @@ public class OrientationPublisher extends AbstractNodeMain {
         SensorManager.getQuaternionFromVector(quaternion, event.values);
         PoseStamped pose = publisher.newMessage();
         pose.getHeader().setFrameId("/map");
-        // TODO(damonkohler): Should get time from the Node.
         pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
         pose.getPose().getOrientation().setW(quaternion[0]);
         pose.getPose().getOrientation().setX(quaternion[1]);

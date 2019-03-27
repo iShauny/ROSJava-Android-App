@@ -8,6 +8,7 @@
     <string name="getMasterUriNotConnected">No master currently connected.</string>
     <string name="CameraCompressedTopic">/usb_cam/image_raw/compressed</string>
     <string name="CmdVelTopic">/cmd_vel</string>
+    <string name="LCDNode">/LCDstring</string>
 
 
 </resources>

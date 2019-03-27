@@ -10,6 +10,7 @@ import org.ros.address.InetAddressFactory;
 import org.ros.android.BitmapFromCompressedImage;
 import org.ros.android.RosActivity;
 import org.ros.android.view.RosImageView;
+import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
@@ -22,6 +23,7 @@ import java.util.Locale;
 
 import geometry_msgs.Twist;
 import io.github.controlwear.virtual.joystick.android.JoystickView;
+import std_msgs.String;
 
 public class CameraView extends RosActivity {
 
@@ -52,6 +54,7 @@ public class CameraView extends RosActivity {
 
         CameraViewInit(nodeMainExecutor);
         JoystickNodeInit(nodeMainExecutor);
+        LCDInit(nodeMainExecutor);
     }
 
     private void JoystickNodeInit(NodeMainExecutor  nodeMainExecutor) {
@@ -78,11 +81,50 @@ public class CameraView extends RosActivity {
         CameraImage.setMessageType(sensor_msgs.CompressedImage._TYPE);
         CameraImage.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
-        /* create a note connection */
+        /* create a node connection */
         NodeConfiguration nodeConfiguration =
                 NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress(),
                         getMasterUri());
         nodeMainExecutor.execute(CameraImage, nodeConfiguration.setNodeName("RosJava/VideoView"));
+    }
+
+    private void LCDInit (NodeMainExecutor nodeMainExecutor) {
+        NodeMain LCDNode = new LCDNode();
+
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
+                InetAddressFactory.newNonLoopback().getHostAddress());
+        nodeConfiguration.setMasterUri(getMasterUri());
+
+        nodeMainExecutor.execute(LCDNode, nodeConfiguration);
+    }
+    private class LCDNode extends AbstractNodeMain implements NodeMain{
+
+        @Override
+        public GraphName getDefaultNodeName() {
+            return GraphName.of("RosJava/LCDController");
+        }
+
+        public void onStart(ConnectedNode connectedNode){
+            final Publisher<String> LCDColorPublisher = connectedNode.newPublisher(
+                    getString(R.string.LCDNode), std_msgs.String._TYPE);
+            final Publisher<String> LCDTextPublisher = connectedNode.newPublisher(
+                    getString(R.string.LCDNode), std_msgs.String._TYPE);
+            connectedNode.executeCancellableLoop(new CancellableLoop() {
+                @Override
+                protected void loop() throws InterruptedException {
+                    String LCDColorMessage = LCDColorPublisher.newMessage();
+                    String LCDTextMessage = LCDColorPublisher.newMessage();
+
+                    LCDColorMessage.setData("$Color:255,215,0");
+                    LCDColorPublisher.publish(LCDColorMessage);
+
+                    LCDTextMessage.setData("Teleopration");
+                    LCDTextPublisher.publish(LCDTextMessage);
+                    Thread.sleep(10000);
+                }
+            });
+
+        }
     }
 
     /* this function creates the node for the joystick */
@@ -132,6 +174,7 @@ public class CameraView extends RosActivity {
 
                     /* This line creates a new twist message */
                     geometry_msgs.Twist CameraMovement = MovementPublisher.newMessage();
+
 
                     /*
                     To better understand the next algorithm, here is an explanation:
@@ -186,8 +229,9 @@ public class CameraView extends RosActivity {
                     CameraMovement.getLinear().setX(x[0]);
                     CameraMovement.getAngular().setZ(z[0]);
 
+                    // TODO: Use other directional speeds
                     /* let user see their speed */
-                    JoystickParamsTextView.setText(String.format(Locale.ENGLISH,
+                    JoystickParamsTextView.setText(java.lang.String.format(Locale.ENGLISH,
                             "Linear Speed: %2.2f m/s, Angular Speed: %2.2f m/s",
                             x[0], z[0]));
 

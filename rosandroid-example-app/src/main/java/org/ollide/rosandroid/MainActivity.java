@@ -44,6 +44,7 @@ public class MainActivity extends RosActivity {
         newMasterFAB.setAlpha(0.5f);
         newMasterFAB.setOnClickListener(new View.OnClickListener() {
             @Override
+            //TODO: handle this better
             public void onClick(View v) {
                 try {
                     startMasterChooser();
