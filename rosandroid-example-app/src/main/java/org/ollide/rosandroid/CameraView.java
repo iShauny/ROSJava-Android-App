@@ -97,6 +97,7 @@ public class CameraView extends RosActivity {
 
         nodeMainExecutor.execute(LCDNode, nodeConfiguration);
     }
+
     private class LCDNode extends AbstractNodeMain implements NodeMain{
 
         @Override
