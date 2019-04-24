@@ -119,7 +119,7 @@ public class CameraView extends RosActivity {
                     LCDColorMessage.setData("$Color:255,215,0");
                     LCDColorPublisher.publish(LCDColorMessage);
 
-                    LCDTextMessage.setData("Teleopration");
+                    LCDTextMessage.setData("Teleoperation");
                     LCDTextPublisher.publish(LCDTextMessage);
                     Thread.sleep(10000);
                 }

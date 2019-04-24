@@ -9,6 +9,9 @@
     <string name="CameraCompressedTopic">/usb_cam/image_raw/compressed</string>
     <string name="CmdVelTopic">/cmd_vel</string>
     <string name="LCDNode">/LCDstring</string>
+    <string name="sonar1Topic">/arduino/sonar_1</string>
+    <string name="sonar2Topic">/arduino/sonar_2</string>
+    <string name="sonar3Topic">/arduino/sonar_3</string>
 
 
 </resources>

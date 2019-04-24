@@ -27,7 +27,12 @@
         android:id="@+id/JoystickParametersTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/CameraJoystick"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="false"
+        android:layout_marginRight="50dp"
         android:text="Angle: Strength:" />
 
 </RelativeLayout>
